@@ -1,22 +1,38 @@
 const { response } = require("express")
+const bcrypt = require("bcryptjs")
+const Usuario = require("../models/user")
 
-const userGet = (req, res = response) => {
-  const { id, nombre } = req.query
-  res.json({ ok: true, msg: "rest GET - controller", id, nombre })
+const userGet = async (req, res = response) => {
+  const { limite = 10, desde = 0 } = req.query
+  const query = { status: true }
+  const [total, users] = await Promise.all([
+    Usuario.countDocuments(query),
+    Usuario.find(query).skip(desde).limit(limite),
+  ])
+  res.json({ total, users })
 }
 
-const userSave = (req, res) => {
-  const { nombre, edad } = req.body
-  res.json({ ok: true, msg: "REST save", nombre, edad })
+const userSave = async (req, res) => {
+  const salt = bcrypt.genSaltSync()
+  const { correo, password, edad, nombre } = new Usuario(req.body)
+  const usuario = new Usuario(req.body)
+  usuario.password = bcrypt.hashSync(password, salt)
+
+  await usuario.save()
+  res.json(usuario)
 }
 
-const userUpdate = (req, res) => {
-  const id = req.params.id
-  res.json({ ok: true, msg: "REST update", id })
+const userUpdate = async (req, res) => {
+  const { id } = req.params
+  const { _id, password, correo, ...resto } = req.body
+  const userUpdate = await Usuario.findByIdAndUpdate(id, resto)
+  res.json(userUpdate)
 }
 
-const userDelete = (req, res) => {
-  res.json({ ok: true, msg: "REST delete" })
+const userDelete = async (req, res) => {
+  const { id } = req.params
+  const userDelete = await Usuario.findByIdAndUpdate(id, { status: false })
+  res.json(userDelete)
 }
 
 module.exports = {
