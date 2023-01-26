@@ -1,9 +1,14 @@
 const { Schema, model } = require("mongoose")
 
 const RoleSchema = Schema({
-  rol: {
+  ROL: {
     type: String,
-    required: [true, "El rol es requerido"],
+  },
+  PERMISSION: {
+    type: Array,
+  },
+  MODULES: {
+    type: Array,
   },
 })
 

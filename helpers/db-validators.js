@@ -1,11 +1,13 @@
 const Role = require("../models/role")
 const Usuario = require("../models/user")
-const validateRol = async (rol = "") => {
-  const exitRole = await Role.findOne({ rol })
+
+const validateRol = async (ROL = "") => {
+  const exitRole = await Role.findOne({ ROL })
   if (!exitRole) {
-    throw new Error(`El rol ${rol} no es valido`)
+    throw new Error(`El rol ${ROL} no es valido`)
   }
 }
+
 const existEmail = async (correo = "") => {
   const mailExist = await Usuario.findOne({ correo })
   if (mailExist) {
@@ -20,8 +22,16 @@ const existUserById = async (id) => {
   }
 }
 
+const userInactive = async (id) => {
+  const { status } = await Usuario.findById(id)
+  if (!status) {
+    throw new Error(`El ya usuario se encuentra inactivo`)
+  }
+}
+
 module.exports = {
   validateRol,
   existEmail,
   existUserById,
+  userInactive,
 }
