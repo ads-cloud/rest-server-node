@@ -18,14 +18,14 @@ const existEmail = async (correo = "") => {
 const existUserById = async (id) => {
   const userExist = await Usuario.findById(id)
   if (!userExist) {
-    throw new Error(`El usuario que intenta modificar no existe`)
+    throw new Error(`El usuario que desea procesar no existe`)
   }
 }
 
-const userInactive = async (id) => {
+const userActive = async (id) => {
   const { status } = await Usuario.findById(id)
   if (!status) {
-    throw new Error(`El ya usuario se encuentra inactivo`)
+    throw new Error(`El usuario se encuentra inactivo`)
   }
 }
 
@@ -33,5 +33,5 @@ module.exports = {
   validateRol,
   existEmail,
   existUserById,
-  userInactive,
+  userActive,
 }

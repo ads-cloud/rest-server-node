@@ -1,15 +1,17 @@
 const { Router } = require("express")
 const { check } = require("express-validator")
 
-const { validateFields } = require("../middlewares/validate fields")
-const { validateJWT } = require("../middlewares/validar-jwt")
-const { validateRolAction } = require("../middlewares/validar-roles")
+const {
+  validateFields,
+  validateJWT,
+  validateRolAction,
+} = require("../middlewares")
 
 const {
   validateRol,
   existEmail,
   existUserById,
-  userInactive,
+  userActive,
 } = require("../helpers/db-validators")
 
 const {
@@ -26,6 +28,8 @@ router.get("/", userGet)
 
 router.post(
   "/",
+  validateJWT,
+  validateRolAction,
   [
     check("correo", "Correo no valido").isEmail(),
     check("correo", "Correo es obligatorio").not().isEmpty(),
@@ -44,6 +48,8 @@ router.post(
 
 router.put(
   "/:id",
+  validateJWT,
+  validateRolAction,
   [
     check("id", "Id no valido").isMongoId(),
     check("nombre", "El nombre es obligatorio").not().isEmpty(),
@@ -62,13 +68,21 @@ router.delete(
   [
     check("id", "Id no valido").isMongoId(),
     check("id").custom(existUserById),
-    check("id").custom(userInactive),
+    check("id").custom(userActive),
   ],
 
   validateFields,
   userDelete
 )
 
-router.get("/getUserById/:id", getUserById)
+router.get(
+  "/getUserById/:id",
+  [check("id", "El id que envia no es valido").isMongoId()],
+  check("id").custom(existUserById),
+  validateJWT,
+  validateRolAction,
+  validateFields,
+  getUserById
+)
 
 module.exports = router

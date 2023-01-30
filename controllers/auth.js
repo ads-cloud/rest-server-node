@@ -13,7 +13,7 @@ const login = async (req, res = response) => {
     }
     if (!usuario.status) {
       return res.status(400).json({
-        msg: "Usuario o password son incorrectos status",
+        msg: "Acceso denegado",
       })
     }
     const validPasswor = bcryptjs.compareSync(password, usuario.password)

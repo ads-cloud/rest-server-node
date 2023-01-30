@@ -16,7 +16,7 @@ const validateJWT = async (req = request, res = response, next) => {
     const usuario = await Usuario.findById(uid)
     if (!usuario) {
       return res.status(401).json({
-        msg: "El usuario no existe",
+        msg: "Usuario no autorizado",
       })
     }
     if (!usuario.status) {
