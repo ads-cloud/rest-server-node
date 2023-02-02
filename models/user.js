@@ -29,6 +29,9 @@ const UsuarioSchema = Schema({
   userRol: {
     type: Object,
   },
+  google: {
+    type: Boolean,
+  },
 })
 
 UsuarioSchema.methods.toJSON = function () {
