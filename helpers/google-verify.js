@@ -1,5 +1,5 @@
 const { OAuth2Client } = require("google-auth-library")
-const { existEmail } = require("./db-validators")
+
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 async function googleVerify(token = "") {
   const ticket = await client.verifyIdToken({
